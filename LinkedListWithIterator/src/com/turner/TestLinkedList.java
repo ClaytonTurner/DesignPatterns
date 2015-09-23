@@ -1,8 +1,6 @@
 package com.turner;
 
 
-import LinkedList;
-
 public class TestLinkedList
 {
     public static void main(String[] args)

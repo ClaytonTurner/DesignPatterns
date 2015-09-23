@@ -2,6 +2,7 @@ package com.turner;
 
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -28,10 +29,13 @@ public class LinkedList<E> implements Iterable<E>
 
         /**
          * Construct a node with the specified data value and link.
+         * No null check on data - you want null data? You got it!
+         * Null constructor already exists for Node
          */
         public Node(E data, Node<E> next)
         {
-
+            this.data = data;
+            this.next = next;
         }
 
 
@@ -68,7 +72,11 @@ public class LinkedList<E> implements Iterable<E>
         @Override
         public boolean hasNext()
         {
-            ...
+            boolean returnValue = true;
+            if(this.nextElement == null){
+                returnValue = false;
+            }
+            return returnValue;
         }
 
 
@@ -80,11 +88,23 @@ public class LinkedList<E> implements Iterable<E>
         @Override
         public E next()
         {
-            ...
+            if(this.hasNext()){
+                // Proceed as normal
+                return (E) nextElement.next;
+            }
+            else{
+                NoSuchElementException e = new NoSuchElementException();
+                System.out.println("No next element. Throwing exception.");
+                throw e;
+            }
         }
 
         // Note: Do not have to implement other methods in interface
         // Iterator since they have default implementations.
+        // Unfortunately, IntelliJ throws a fit if I don't
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
 
@@ -112,10 +132,13 @@ public class LinkedList<E> implements Iterable<E>
 
     /**
      * Constructs an empty list.
+     * Null head since we have no elements.
+     * Size is 0 if no elements are present.
      */
     public LinkedList()
     {
-        ...
+        this.head = null;
+        this.size = 0;
     }
 
 
@@ -131,7 +154,6 @@ public class LinkedList<E> implements Iterable<E>
             Node<E> lastNode = getNode(size - 1);
             lastNode.next = new Node<E>(element);
         }
-
         ++size;
     }
 
@@ -144,7 +166,38 @@ public class LinkedList<E> implements Iterable<E>
      */
     public void add(int index, E element)
     {
-        ...
+        if(index > this.size){
+            IndexOutOfBoundsException e = new IndexOutOfBoundsException();
+            System.out.println("Index is out of range. Throwing exception.");
+            throw e;
+        }
+        // So we know we fit in the list if we made it this far
+        if(head == null){
+            add(element);
+        }
+        else {
+            Node<E> current; // init it for the 0 case
+            Node<E> toInsert = new Node<E>(element); // init the new node
+            // So we know the node to insert is next
+            // This isn't the most elegant path, but it's readable
+            if (index == 0) {
+                // edge case => beginning of list
+                current = getNode(index);
+                this.head = toInsert;
+                toInsert.next = current;
+            } else if (index == size) {
+                // edge case => end of list
+                current = getNode(index-1); // So we don't go out of bounds
+                current.next = toInsert;
+            } else {
+                current = getNode(index);
+                Node<E> previous = getNode(index - 1);
+                previous.next = toInsert;
+                toInsert.next = current;
+            }
+            size++; // here since head == null case has its own size incrementer
+        }
+
     }
 
 
@@ -192,7 +245,15 @@ public class LinkedList<E> implements Iterable<E>
      */
     public E set(int index, E newValue)
     {
-        ...
+        if(index > this.size){
+            IndexOutOfBoundsException e = new IndexOutOfBoundsException();
+            System.out.println("Index is out of range. Throwing exception.");
+            throw e;
+        }
+        E oldDataToReturn = get(index);
+        Node<E> n = getNode(index);
+        n.data = newValue;
+        return oldDataToReturn;
     }
 
 
@@ -234,7 +295,12 @@ public class LinkedList<E> implements Iterable<E>
      */
     public boolean isEmpty()
     {
-        ...
+        if(this.size == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 
@@ -249,7 +315,35 @@ public class LinkedList<E> implements Iterable<E>
      */
     public E remove(int index)
     {
-        ...
+        if(index > this.size){
+            IndexOutOfBoundsException e = new IndexOutOfBoundsException();
+            System.out.println("Index is out of range. Throwing exception.");
+            throw e;
+        }
+        E removed_element = get(index);
+
+        if(index == 0){
+            // edge case => beginning of list
+            if(size == 1){
+                this.head = null;
+            }
+            else{
+                this.head = getNode(1);
+            }
+        }
+        else if(index == size-1){
+            // edge case => end of list
+            Node<E> n = getNode(index-1);
+            n.next = null;
+        }
+        else{
+            Node<E> previous = getNode(index-1);
+            Node<E> next = getNode(index+1);
+            previous.next = next;
+        }
+
+        size--;
+        return removed_element;
     }
 
 
@@ -258,7 +352,17 @@ public class LinkedList<E> implements Iterable<E>
      */
     public int size()
     {
-        ...
+        int my_size = 0;
+        // Better readability this way
+        if(head == null){
+            return my_size;
+        }
+        Node current = head;
+        while(current != null){
+            my_size++;
+            current = current.next;
+        }
+        return my_size;
     }
 
 
@@ -268,7 +372,8 @@ public class LinkedList<E> implements Iterable<E>
     @Override
     public Iterator<E> iterator()
     {
-        ...
+        //TODO
+        return null;
     }
 
 
@@ -278,7 +383,22 @@ public class LinkedList<E> implements Iterable<E>
     @Override
     public String toString()
     {
-        ...
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        Node current = head;
+        while(current != null){
+            s.append(current.data);
+            s.append(", ");
+            current = current.next;
+        }
+        if(s.length() > 2) {
+            // so we remove that last comma if we added at least 1 element
+            s.deleteCharAt(s.length() - 1);
+            // and the space that comes with it
+            s.deleteCharAt(s.length() - 1);
+        }
+        s.append("]");
+        return s.toString();
     }
 
 

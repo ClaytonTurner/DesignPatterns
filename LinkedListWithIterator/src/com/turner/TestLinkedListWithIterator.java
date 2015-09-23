@@ -1,9 +1,6 @@
 package com.turner;
 
 
-import LinkedList;
-
-
 public class TestLinkedListWithIterator
 {
     public static void main(String[] args)
@@ -29,7 +26,7 @@ public class TestLinkedListWithIterator
         // Note that you get a forEach() method for free
         // (default method in interface Iterable) that
         // allows a lambda expressions as the parameter.
-        names.forEach(name -> System.out.println(name));
+        //names.forEach(name -> System.out.println(name));
         System.out.println();
     }
 }
