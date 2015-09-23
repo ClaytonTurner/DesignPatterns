@@ -89,5 +89,56 @@ public class TestLinkedList
             System.out.println("Exception information to follow:");
             e.printStackTrace(System.out);
         }
+        System.out.println();
+
+        LinkedList<String> l3 = new LinkedList<>();
+        l3.add("Paul");
+        l3.add(0, "Pete");
+        l3.add(1, "George");
+        l3.add("John");
+        l3.add("Stuart");
+        System.out.println("Let's view the members:");
+        System.out.println(l3.toString());
+        System.out.println();
+        System.out.println("Clearing out the list. 5 Beatles just doesn't work");
+        l3.clear();
+        System.out.println();
+
+        l3.add("Paul");
+        l3.add("Ringo");
+        l3.add("George");
+        l3.add(2, "John");
+        int my_size = l3.size();
+        System.out.println("Added "+String.valueOf(my_size)+" members. Now we can 'Meet the Beatles'");
+        System.out.println(l3.toString());
+        System.out.println();
+        System.out.println("Unfortunately, John has died, so let's remove him");
+        l3.remove(2);
+        System.out.println();
+        System.out.println("Now let's view our " + String.valueOf(l3.size()) + " members");
+        System.out.println(l3.toString());
+        System.out.println();
+        System.out.println("Is our band empty? true = Yes. false = No.");
+        System.out.println(String.valueOf(l3.isEmpty()));
+
+        System.out.println();
+        System.out.println("We removed John by a hard-coded index earlier. " +
+                "Let's make sure we don't need that");
+        l3.clear();
+        System.out.println("Band cleared");
+        l3.add("Paul");
+        l3.add("Ringo");
+        l3.add("George");
+        l3.add("John");
+        System.out.println();
+        System.out.println("Members added back");
+        System.out.println();
+        System.out.println("John died again! Remove him. Luckily we only have one John." +
+                " We would need last names otherwise.");
+        l3.remove(l3.indexOf("John"));
+        System.out.println();
+        System.out.println("Let's verify by printing out the living band members after" +
+                " John's death.");
+        System.out.println(l3.toString());
     }
 }

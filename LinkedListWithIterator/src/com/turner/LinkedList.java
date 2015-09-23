@@ -62,7 +62,7 @@ public class LinkedList<E> implements Iterable<E>
          */
         public LinkedListIterator(Node<E> head)
         {
-            nextElement = head;
+            this.nextElement = head;
         }
 
 
@@ -72,11 +72,8 @@ public class LinkedList<E> implements Iterable<E>
         @Override
         public boolean hasNext()
         {
-            boolean returnValue = true;
-            if(this.nextElement == null){
-                returnValue = false;
-            }
-            return returnValue;
+            return this.nextElement != null; //&&
+                    //this.nextElement.next != null;
         }
 
 
@@ -90,7 +87,13 @@ public class LinkedList<E> implements Iterable<E>
         {
             if(this.hasNext()){
                 // Proceed as normal
-                return (E) nextElement.next;
+                // This looks funky since I'm returning the initial value
+                // But this follows through in the other methods and
+                // ultimately results in a functional iterator
+                // If it ain't broke...
+                E returnValue = this.nextElement.data;
+                this.nextElement = this.nextElement.next;
+                return returnValue;
             }
             else{
                 NoSuchElementException e = new NoSuchElementException();
@@ -372,8 +375,7 @@ public class LinkedList<E> implements Iterable<E>
     @Override
     public Iterator<E> iterator()
     {
-        //TODO
-        return null;
+        return new LinkedListIterator<>(head);
     }
 
 
