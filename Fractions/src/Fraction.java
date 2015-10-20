@@ -1,3 +1,5 @@
+package com.turner;
+
 /**
  * This class encapsulates mathematical fractions (or rational numbers).
  * Fractions have a numerator and a denominator, both of type long.
